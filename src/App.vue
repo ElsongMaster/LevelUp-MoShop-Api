@@ -2,12 +2,30 @@
   <div id="app">
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/shop">MoShop</router-link>
     </div>
     <router-view/>
+    <!-- <p>{{dataShop.data}}</p> -->
   </div>
 </template>
+<script>
+import axios from "axios"
+import {mapState} from 'vuex'
+export default {
+  mounted(){
+    axios.get("https://api-moshop.molengeek.pro/api/v1/mg/shop").then((res)=>{
+      console.log(res.data.data)
+      this.$store.dispatch('updateDataShop',res.data.data)
+    })
+  },
 
+  computed:{
+
+    ...mapState(['dataShop']),
+  }
+  
+}
+</script>
 <style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
