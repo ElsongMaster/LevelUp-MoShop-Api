@@ -2,8 +2,10 @@
   <div id="app">
     <div id="nav">
       <router-link to="/shop">MoShop</router-link>
-      <router-link to="/login">login</router-link>
-      <router-link to="/register">register</router-link>
+      <router-link v-if="tokenConnexion === null" to="/login">login</router-link>
+      <router-link v-if="tokenConnexion === null"  to="/register">register</router-link>
+      <router-link v-if="tokenConnexion !=null"  to="/profil">profil</router-link>
+      <router-link v-if="tokenConnexion !=null" to=""  @click.native="logout()">logout</router-link>
     </div>
     <router-view />
     <!-- <p>{{dataShop.data}}</p> -->
@@ -15,16 +17,25 @@ import { mapState } from "vuex";
 export default {
   mounted() {
     axios.get("https://api-moshop.molengeek.pro/api/v1/mg/shop").then((res) => {
-      console.log(res.data.data);
-      this.$store.dispatch("updateDataShop", res.data.data);
+      // console.log(res.data.data);
+      // this.$store.dispatch("updateDataShop", res.data.data);
+      localStorage.setItem('dataShop',JSON.stringify(res.data.data))
     });
   },
 
   computed: {
-    ...mapState(["dataShop"]),
+    ...mapState(["dataShop","tokenConnexion"]),
 
     
   },
+
+  methods:{
+    logout(){
+      this.$store.dispatch("updateTokenConnexion",null)
+      localStorage.removeItem('tokenConnexion')
+      this.$router.push({ path: "/login" });
+    }
+  }
 };
 </script>
 <style lang="scss">

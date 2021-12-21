@@ -87,7 +87,7 @@
             </p>
           </div>
 
-          <button class="btnSubmit rounded-sm" @click="checkValidityData()">
+          <button class="btnSubmit rounded-sm" @click="checkValidityData($event)">
             Register
           </button>
         </form>
@@ -158,7 +158,7 @@ export default {
               this.isOkToSubmit = false;
             } else {
               fsize = Math.round(elt.files.item(0).size / 1024);
-              if (fsize > 20) {
+              if (fsize > 2000) {
                 elt.classList.add("error");
                 this.inputFile.isTooBig = true;
                 console.log("file", fsize, elt.files.item(0).size);
@@ -225,19 +225,19 @@ export default {
             break;
         }
       }
+      this.sendDataForm()
     },
 
     sendDataForm() {
-
       console.log("dans ma fonction");
       var imageUrl = document.getElementById("picture").files.item(0);
-    //   console.log("file", this.$refs.file);
-      var formData = new formData();
-      formData.append("picture", this.image);
-      formData.append("firstname", this.bodyDataForm.firstname);
-      formData.append("lastname", this.bodyDataForm.lastname);
-      formData.append("email", this.bodyDataForm.lastname);
-      formData.append("password", this.bodyDataForm.password);
+      //   console.log("file", this.$refs.file);
+      var formRequest = new FormData();
+      formRequest.append("picture", this.image);
+      formRequest.append("firstname", this.bodyDataForm.firstname);
+      formRequest.append("lastname", this.bodyDataForm.lastname);
+      formRequest.append("email", this.bodyDataForm.email);
+      formRequest.append("password", this.bodyDataForm.password);
 
       if (this.isOkToSubmit) {
         console.log("dans ma condition");
@@ -249,7 +249,7 @@ export default {
         axios
           .post(
             "https://api-moshop.molengeek.pro/api/v1/register",
-            formData,
+            formRequest,
 
             {
               "Content-Type": "multipart/form-data",
@@ -271,7 +271,7 @@ export default {
     },
 
     uploadFile() {
-        this.image = this.$refs.file.files[0]
+      this.image = this.$refs.file.files[0];
     },
   },
 };
