@@ -1,30 +1,31 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
       <router-link to="/shop">MoShop</router-link>
+      <router-link to="/login">login</router-link>
+      <router-link to="/register">register</router-link>
     </div>
-    <router-view/>
+    <router-view />
     <!-- <p>{{dataShop.data}}</p> -->
   </div>
 </template>
 <script>
-import axios from "axios"
-import {mapState} from 'vuex'
+import axios from "axios";
+import { mapState } from "vuex";
 export default {
-  mounted(){
-    axios.get("https://api-moshop.molengeek.pro/api/v1/mg/shop").then((res)=>{
-      console.log(res.data.data)
-      this.$store.dispatch('updateDataShop',res.data.data)
-    })
+  mounted() {
+    axios.get("https://api-moshop.molengeek.pro/api/v1/mg/shop").then((res) => {
+      console.log(res.data.data);
+      this.$store.dispatch("updateDataShop", res.data.data);
+    });
   },
 
-  computed:{
+  computed: {
+    ...mapState(["dataShop"]),
 
-    ...mapState(['dataShop']),
-  }
-  
-}
+    
+  },
+};
 </script>
 <style lang="scss">
 #app {
@@ -37,7 +38,12 @@ export default {
 
 #nav {
   padding: 30px;
-
+  display: flex;
+  min-width: 100px;
+  width: 25%;
+  // border: 2px solid;
+  justify-content: space-evenly;
+  margin: 0 auto;
   a {
     font-weight: bold;
     color: #2c3e50;

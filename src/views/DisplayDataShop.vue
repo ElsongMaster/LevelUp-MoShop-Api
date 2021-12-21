@@ -2,7 +2,6 @@
   <div class="mainContent">
     <h1>Bienvenue sur le site de MoShop</h1>
     <!-- <p>{{ products }}</p> -->
-    <p>what's up</p>
     <div class="container-grid">
       <div
         v-for="product in products"
@@ -56,6 +55,11 @@ export default {
 
 <style lang="scss">
 .mainContent {
+    width: 99vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   .container-grid {
     display: grid;
     width: 90%;
