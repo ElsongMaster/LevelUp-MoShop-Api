@@ -1,7 +1,6 @@
 <template>
   <div class="mainContent">
     <h1>Bienvenue sur le site de MoShop</h1>
-    <!-- <p>{{ products }}</p> -->
     <div class="container-grid">
       <div
         v-for="product in products"
@@ -47,6 +46,7 @@ export default {
         this.products[4].cover_path.length - 3
       ) + "png";
   },
+
   computed: {
     ...mapState(["dataShop"]),
   },
@@ -55,11 +55,11 @@ export default {
 
 <style lang="scss">
 .mainContent {
-    width: 99vw;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  width: 99vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   .container-grid {
     display: grid;
     width: 90%;
@@ -74,12 +74,13 @@ export default {
       display: flex;
       flex-direction: column;
       border: 1px solid;
+      background-color: rgb(219, 215, 215);
+
       .container-img {
         display: flex;
         justify-content: center;
         height: 50%;
         width: 100%;
-        // border: 1px solid green;
         img {
           height: 100%;
           width: 100%;

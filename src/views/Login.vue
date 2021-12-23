@@ -1,9 +1,7 @@
 <template>
   <div class="mainContent">
     <div class="form-container w-1/2 h-screen flex flex-col justify-center">
-      <!-- <a class="try-paraph rounded-lg py-3 text-sm" href=""
-        ><span>Try it free 7 days</span> then $20/mo.thereafter</a
-      > -->
+
 
       <div class="form-content bg-white rounded-lg mt-4">
         <form class="rounded-lg w-3/4 mx-auto mt-5">
@@ -55,6 +53,8 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -71,6 +71,10 @@ export default {
         isEmpty: false,
       },
     };
+  },
+
+  computed: {
+    ...mapState(["tokenConnexion"]),
   },
 
   methods: {
@@ -120,10 +124,9 @@ export default {
       this.sendDataForm();
     },
     sendDataForm() {
-      console.log("dans ma fonction");
 
       var formRequest = new FormData();
-
+      var tokenReq = null;
       formRequest.append("email", this.bodyDataForm.email);
       formRequest.append("password", this.bodyDataForm.password);
 
@@ -132,24 +135,62 @@ export default {
           .post("https://api-moshop.molengeek.pro/api/v1/login", formRequest)
           .then((response) => {
             console.log("login", response);
+            tokenReq = response.data.data.token;
 
-            this.$store.dispatch(
-              "updateTokenConnexion",
-              response.data.data.token
-            );
-            let token = response.data.data.token;
-            localStorage.setItem("tokenConnexion", JSON.stringify(token));
+            this.$store.dispatch("updateTokenConnexion", tokenReq);
+            localStorage.setItem("tokenConnexion", tokenReq);
             this.$router.push({ path: "/" });
-          })
-          .catch(function (error) {
-            if (error.response) {
-              console.log("response:", error.response.request);
-            } else if (error.request) {
-              console.log("request:", error.request);
-            } else if (error.message) {
-              console.log("message:", error.message);
-            }
+
+            //call api data user
+            axios
+              .get("https://api-moshop.molengeek.pro/api/v1/user", {
+                headers: { Authorization: "Bearer " + tokenReq },
+              })
+              .then((res) => {
+                console.log("user", res);
+                let profilUser = res.data.data.profile;
+                console.log("profil", profilUser);
+                localStorage.setItem(
+                  "profilUserConnected",
+                  JSON.stringify(profilUser)
+                );
+                this.$store.dispatch("updateProfilUserConnected", profilUser);
+
+                // Recuperer data mon shop
+                axios
+                  .get("https://api-moshop.molengeek.pro/api/v1/shop", {
+                    headers: { Authorization: "Bearer " + tokenReq },
+                  })
+                  .then((res) => {
+                    console.log("monshop", res);
+                    let dataShop = res.data.data;
+                    localStorage.setItem(
+                      "dataMonShop",
+                      JSON.stringify(res.data.data)
+                    );
+                    this.$store.dispatch("updateDataMonShop", dataShop);
+                  })
+
+
+                // Recuperer data cart
+                axios
+                  .get("https://api-moshop.molengeek.pro/api/v1/cart", {
+                    headers: { Authorization: "Bearer " + tokenReq },
+                  })
+                  .then((res) => {
+                    console.log("cart", res);
+                    let dataCart = res.data.data;
+                    localStorage.setItem(
+                      "dataCart",
+                      JSON.stringify(dataCart)
+                    );
+
+                  })
+
+              })
+
           });
+
       }
     },
   },
@@ -157,14 +198,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// .signup{
-//   background-image: url(./assets/bg-intro-desktop.png);
-//   background-size: cover;
-//   background-color: rgb(255,121,120);
-// }
 body {
-  background-color: gray;
   .mainContent {
+    background-color: gray;
     min-height: 90vh;
     width: 100%;
     display: flex;

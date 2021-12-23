@@ -1,9 +1,7 @@
 <template>
   <div class="mainContent">
     <div class="form-container w-1/2 h-screen flex flex-col justify-center">
-      <!-- <a class="try-paraph rounded-lg py-3 text-sm" href=""
-        ><span>Try it free 7 days</span> then $20/mo.thereafter</a
-      > -->
+
 
       <div class="form-content bg-white rounded-lg mt-4">
         <form
@@ -87,7 +85,10 @@
             </p>
           </div>
 
-          <button class="btnSubmit rounded-sm" @click="checkValidityData($event)">
+          <button
+            class="btnSubmit rounded-sm"
+            @click="checkValidityData($event)"
+          >
             Register
           </button>
         </form>
@@ -103,6 +104,7 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 export default {
   data() {
     return {
@@ -137,6 +139,9 @@ export default {
       },
     };
   },
+  computed: {
+    ...mapState(["tokenConnexion"]),
+  },
 
   methods: {
     checkValidityData(e) {
@@ -161,7 +166,6 @@ export default {
               if (fsize > 2000) {
                 elt.classList.add("error");
                 this.inputFile.isTooBig = true;
-                console.log("file", fsize, elt.files.item(0).size);
                 this.isOkToSubmit = false;
               } else if (
                 !["jpeg", "jpg", "png"].includes(elt.value.split(".").pop())
@@ -225,13 +229,11 @@ export default {
             break;
         }
       }
-      this.sendDataForm()
+      this.sendDataForm();
     },
 
     sendDataForm() {
-      console.log("dans ma fonction");
       var imageUrl = document.getElementById("picture").files.item(0);
-      //   console.log("file", this.$refs.file);
       var formRequest = new FormData();
       formRequest.append("picture", this.image);
       formRequest.append("firstname", this.bodyDataForm.firstname);
@@ -240,11 +242,8 @@ export default {
       formRequest.append("password", this.bodyDataForm.password);
 
       if (this.isOkToSubmit) {
-        console.log("dans ma condition");
 
-        // console.log("pop:", imageUrl.split('\\'))
         this.bodyDataForm.picture = imageUrl;
-        console.log("bodyDataForm", this.bodyDataForm);
 
         axios
           .post(
@@ -257,15 +256,6 @@ export default {
           )
           .then((response) => {
             console.log("register", response);
-          })
-          .catch(function (error) {
-            if (error.response) {
-              console.log("response:", error.response.request);
-            } else if (error.request) {
-              console.log("request:", error.request);
-            } else if (error.message) {
-              console.log("message:", error.message);
-            }
           });
       }
     },
@@ -277,15 +267,11 @@ export default {
 };
 </script>
 
-<style lang="scss">
-// .signup{
-//   background-image: url(./assets/bg-intro-desktop.png);
-//   background-size: cover;
-//   background-color: rgb(255,121,120);
-// }
+<style lang="scss" scoped>
+
 body {
-  background-color: gray;
   .mainContent {
+    background-color: gray;
     min-height: 90vh;
     width: 100%;
     display: flex;
